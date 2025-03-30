@@ -22,14 +22,4 @@ animations {
   }
   playback: PLAYBACK_NONE
 }
-animations {
-  id: "penis"
-  images {
-    image: "/assets/fireball-move-1.png"
-  }
-  images {
-    image: "/assets/kitaec-move-3.png"
-  }
-  playback: PLAYBACK_LOOP_FORWARD
-}
 extrude_borders: 2

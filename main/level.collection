@@ -85,6 +85,12 @@ embedded_instances {
   "}\\n"
   "\"\n"
   "}\n"
+  "embedded_components {\n"
+  "  id: \"reflect\"\n"
+  "  type: \"sound\"\n"
+  "  data: \"sound: \\\"/assets/sound/otrazhenie-shita.ogg\\\"\\n"
+  "\"\n"
+  "}\n"
   ""
   position {
     x: 17.0
