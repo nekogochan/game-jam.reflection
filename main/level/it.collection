@@ -1,0 +1,68 @@
+name: "main"
+scale_along_z: 0
+embedded_instances {
+  id: "map"
+  data: "components {\n"
+  "  id: \"map\"\n"
+  "  component: \"/main/map.tilemap\"\n"
+  "}\n"
+  ""
+  scale3 {
+    x: 4.0
+    y: 4.0
+  }
+}
+embedded_instances {
+  id: "hero"
+  data: "components {\n"
+  "  id: \"hero\"\n"
+  "  component: \"/main/hero.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"sprite\"\n"
+  "  type: \"sprite\"\n"
+  "  data: \"default_animation: \\\"stay\\\"\\n"
+  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
+  "textures {\\n"
+  "  sampler: \\\"texture_sampler\\\"\\n"
+  "  texture: \\\"/main/hero.atlas\\\"\\n"
+  "}\\n"
+  "\"\n"
+  "  rotation {\n"
+  "    z: 1.0\n"
+  "    w: 6.123234E-17\n"
+  "  }\n"
+  "  scale {\n"
+  "    x: 2.0\n"
+  "    y: 2.0\n"
+  "  }\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"move\"\n"
+  "  type: \"sound\"\n"
+  "  data: \"sound: \\\"/assets/sound/top-top.ogg\\\"\\n"
+  "looping: 1\\n"
+  "gain: 0.5\\n"
+  "\"\n"
+  "}\n"
+  ""
+  position {
+    x: 321.0
+    y: 319.0
+    z: 0.1
+  }
+}
+embedded_instances {
+  id: "camera"
+  data: "embedded_components {\n"
+  "  id: \"it\"\n"
+  "  type: \"camera\"\n"
+  "  data: \"aspect_ratio: 1.0\\n"
+  "fov: 0.7854\\n"
+  "near_z: 0.0\\n"
+  "far_z: 1000.0\\n"
+  "orthographic_projection: 1\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
