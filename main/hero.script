@@ -70,7 +70,7 @@ function on_input(self, action_id, action)
 
 	if (self.movingActiveKeys > 0) then
 		set_cam_to_self();
-		if (self.movingActiveKeys == 1 and action.pressed) then
+		if (self.movingActiveKeys == 1 and action.pressed and isMoveAction) then
 			sprite.play_flipbook("#sprite", hash("move"))
 			sound.play("#move");
 		end

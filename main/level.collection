@@ -14,6 +14,7 @@ embedded_instances {
 }
 embedded_instances {
   id: "hero"
+  children: "shield"
   data: "components {\n"
   "  id: \"hero\"\n"
   "  component: \"/main/hero.script\"\n"
@@ -42,14 +43,14 @@ embedded_instances {
   "  type: \"sound\"\n"
   "  data: \"sound: \\\"/assets/sound/top-top.ogg\\\"\\n"
   "looping: 1\\n"
-  "gain: 0.5\\n"
+  "gain: 10.0\\n"
   "\"\n"
   "}\n"
   ""
   position {
-    x: 321.0
-    y: 319.0
-    z: 0.1
+    x: 320.0
+    y: 320.0
+    z: 1.0
   }
 }
 embedded_instances {
@@ -57,12 +58,45 @@ embedded_instances {
   data: "embedded_components {\n"
   "  id: \"it\"\n"
   "  type: \"camera\"\n"
-  "  data: \"aspect_ratio: 1.0\\n"
+  "  data: \"aspect_ratio: 2.0\\n"
   "fov: 0.7854\\n"
-  "near_z: 0.0\\n"
-  "far_z: 1000.0\\n"
+  "near_z: -10.0\\n"
+  "far_z: 10.0\\n"
   "orthographic_projection: 1\\n"
+  "orthographic_zoom: 1.5\\n"
   "\"\n"
   "}\n"
   ""
+}
+embedded_instances {
+  id: "shield"
+  data: "components {\n"
+  "  id: \"shield\"\n"
+  "  component: \"/main/shield.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"sprite\"\n"
+  "  type: \"sprite\"\n"
+  "  data: \"default_animation: \\\"ready\\\"\\n"
+  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
+  "textures {\\n"
+  "  sampler: \\\"texture_sampler\\\"\\n"
+  "  texture: \\\"/main/shield.atlas\\\"\\n"
+  "}\\n"
+  "\"\n"
+  "}\n"
+  ""
+  position {
+    x: 17.0
+    y: 48.0
+    z: 0.1
+  }
+  rotation {
+    x: 1.0
+    w: 6.123234E-17
+  }
+  scale3 {
+    x: 2.0
+    y: 2.0
+  }
 }
