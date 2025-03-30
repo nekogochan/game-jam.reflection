@@ -1,0 +1,9 @@
+animations {
+  id: "dummy"
+  images {
+    image: "/dummy/pics/whitebox.png"
+  }
+  playback: PLAYBACK_NONE
+  fps: 1
+}
+extrude_borders: 2

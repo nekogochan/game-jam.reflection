@@ -1,0 +1,41 @@
+function init(self)
+	-- self.look_at_player = false
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- if not self.look_at_player and true then -- TODO: another condition
+	-- 	look_at_player()
+	-- 	self.look_at_player = true
+	-- end
+end
+
+function look_at_player() -- should not be inside a cycle
+	local player_pos = go.get_position(msg.url("/player/playerobj"))
+	local pos = go.get_position()
+	local dir = player_pos - pos
+	dir.z = pos.z
+
+	local look_dirv = vmath.normalize(player_pos - pos)
+	local angle = math.atan2(look_dirv.y, look_dirv.x) + math.pi / 2.0 -- смещаем круг углов на пи/2 потому что спрайт смотрит в 3пи/2
+	angle = math.deg(angle)
+
+	go.set_rotation(vmath.euler_to_quat(0, 0, angle), "sprite")
+end
+
+function fixed_update(self, dt)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("trigger_response") then
+		msg.post(message.other_id, "is_reflected", { other_id = msg.url() })
+	elseif message_id == hash("is_reflected") and message.is_reflected then
+		msg.post(message.other_id, "destroy")
+		go.delete()
+	end
+end

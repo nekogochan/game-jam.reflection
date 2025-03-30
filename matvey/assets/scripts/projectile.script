@@ -1,0 +1,48 @@
+local MAX_TIME_TO_DESTROY = 5.0
+
+go.property("is_reflected", false)
+
+function init(self)
+	self.direction = vmath.vector3(-1, 0, 0)
+	self.linspeed = 5.0
+	self.time_to_destroy = MAX_TIME_TO_DESTROY
+end
+
+function final(self)
+end
+
+function update(self, dt)
+	self.time_to_destroy = self.time_to_destroy - dt
+	if self.time_to_destroy <= 0.0 then
+		go.delete()
+	end
+end
+
+function fixed_update(self, dt)
+	local norma = vmath.normalize(self.direction)
+	local pos = go.get_position()
+
+	pos.x = pos.x + norma.x * self.linspeed
+	pos.y = pos.y + norma.y * self.linspeed
+
+	go.set_position(pos)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("set_direction") then
+		self.direction = message.direction
+		self.is_reflected = message.is_reflected
+		self.time_to_destroy = MAX_TIME_TO_DESTROY
+	elseif message_id == hash("destroy") then
+		go.delete()
+	elseif message_id == hash("is_reflected") then
+		print(message.other_id)
+		msg.post(message.other_id, "is_reflected", { is_reflected = self.is_reflected, other_id = msg.url() })
+	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end
