@@ -1,5 +1,62 @@
+local function switch_behavior(self)
+	if self.behavior == self.RUN_TO_PLAYER or self.behavior == self.RUN_TO_RANDOM_PLACE then
+		self.behavior = self.LOOK
+	elseif self.behavior == self.LOOK then
+		self.behavior = self.SHOOT
+	elseif self.behavior == self.SHOOT then
+		self.behavior = self.RUN_TO_RANDOM_PLACE
+		self.random_place = go.get_position() + vmath.vector3(math.random(-70, 70), math.random(-70, 70), 0)
+	end
+
+	self.time_to_switch_behavior = 0.87
+end
+
+local function look_at(target_pos) -- should not be inside a cycle
+	local pos = go.get_position()
+	local dir = target_pos - pos
+	dir.z = pos.z
+
+	local look_dirv = vmath.normalize(dir)
+	local angle = math.atan2(look_dirv.y, look_dirv.x) + math.pi / 2.0 -- смещаем круг углов на пи/2 потому что спрайт смотрит в 3пи/2
+	angle = math.deg(angle)
+
+	go.set_rotation(vmath.euler_to_quat(0, 0, angle), "sprite")
+end
+
+local function run_to_place(self, target_pos)
+	local pos = go.get_position()
+	local dir = target_pos - pos
+	dir.z = pos.z
+
+	local look_dirv = vmath.normalize(dir)
+	pos.x = pos.x + look_dirv.x * self.linspeed
+	pos.y = pos.y + look_dirv.y * self.linspeed
+
+	go.set_position(pos)
+	return vmath.length(target_pos - pos)
+end
+
+local function shoot(self)
+	local player_pos = go.get_position(msg.url("/player/playerobj"))
+	local pos = go.get_position()
+
+	local dir = vmath.normalize(player_pos - pos)
+	dir.z = 0
+	
+	local projectile_urls = collectionfactory.create("#shooter", pos)
+	msg.post(projectile_urls["/projectile"], "set_direction", { direction = dir })
+end
+
 function init(self)
-	-- self.look_at_player = false
+	self.RUN_TO_PLAYER = 0
+	self.LOOK = 1
+	self.SHOOT = 2
+	self.RUN_TO_RANDOM_PLACE = 3
+	self.behavior = self.RUN_TO_PLAYER
+
+	self.time_to_switch_behavior = 2.0 -- in seconds
+	self.linspeed = 0.87
+	self.random_place = go.get_position()
 end
 
 function final(self)
@@ -9,26 +66,33 @@ function final(self)
 end
 
 function update(self, dt)
-	-- if not self.look_at_player and true then -- TODO: another condition
-	-- 	look_at_player()
-	-- 	self.look_at_player = true
-	-- end
-end
+	if self.behavior == self.RUN_TO_PLAYER then
+		local player_pos = go.get_position(msg.url("/player/playerobj"))
+		look_at(player_pos)
+		local distance = run_to_place(self, player_pos)
 
-function look_at_player() -- should not be inside a cycle
-	local player_pos = go.get_position(msg.url("/player/playerobj"))
-	local pos = go.get_position()
-	local dir = player_pos - pos
-	dir.z = pos.z
+		if distance <= 1.0 then
+			switch_behavior(self)
+		end
+	elseif self.behavior == self.RUN_TO_RANDOM_PLACE then
+		local distance = run_to_place(self, self.random_place)
+		look_at(self.random_place)
 
-	local look_dirv = vmath.normalize(player_pos - pos)
-	local angle = math.atan2(look_dirv.y, look_dirv.x) + math.pi / 2.0 -- смещаем круг углов на пи/2 потому что спрайт смотрит в 3пи/2
-	angle = math.deg(angle)
+		if distance <= 1.0 then
+			switch_behavior(self)
+		end
+	elseif self.behavior == self.LOOK then
+		local player_pos = go.get_position(msg.url("/player/playerobj"))
+		look_at(player_pos)
+	elseif self.behavior == self.SHOOT then
+		shoot(self)
+		switch_behavior(self)
+	end
 
-	go.set_rotation(vmath.euler_to_quat(0, 0, angle), "sprite")
-end
-
-function fixed_update(self, dt)
+	self.time_to_switch_behavior = self.time_to_switch_behavior - dt
+	if self.time_to_switch_behavior <= 0.0 then
+		switch_behavior(self)
+	end
 end
 
 function on_message(self, message_id, message, sender)
@@ -36,6 +100,6 @@ function on_message(self, message_id, message, sender)
 		msg.post(message.other_id, "is_reflected", { other_id = msg.url() })
 	elseif message_id == hash("is_reflected") and message.is_reflected then
 		msg.post(message.other_id, "destroy")
-		go.delete()
+		go.delete(".", true)
 	end
 end

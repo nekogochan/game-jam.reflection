@@ -59,6 +59,12 @@ embedded_instances {
   "}\\n"
   "\"\n"
   "}\n"
+  "embedded_components {\n"
+  "  id: \"shooter\"\n"
+  "  type: \"collectionfactory\"\n"
+  "  data: \"prototype: \\\"/dummy/prefabs/projectile_dbg.collection\\\"\\n"
+  "\"\n"
+  "}\n"
   ""
 }
 embedded_instances {
