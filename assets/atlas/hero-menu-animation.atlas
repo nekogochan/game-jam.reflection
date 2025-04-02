@@ -1,0 +1,27 @@
+animations {
+  id: "dance"
+  images {
+    image: "/assets/img/hero/menu-animation/part-1.png"
+  }
+  images {
+    image: "/assets/img/hero/menu-animation/part-2.png"
+  }
+  images {
+    image: "/assets/img/hero/menu-animation/part-3.png"
+  }
+  images {
+    image: "/assets/img/hero/menu-animation/part-4.png"
+  }
+  images {
+    image: "/assets/img/hero/menu-animation/part-5.png"
+  }
+  images {
+    image: "/assets/img/hero/menu-animation/part-6.png"
+  }
+  images {
+    image: "/assets/img/hero/menu-animation/part-7.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+extrude_borders: 2
