@@ -1,0 +1,34 @@
+animations {
+  id: "move"
+  images {
+    image: "/assets/img/fireball/move-0.png"
+  }
+  images {
+    image: "/assets/img/fireball/move-1.png"
+  }
+  images {
+    image: "/assets/img/fireball/move-2.png"
+  }
+  images {
+    image: "/assets/img/fireball/move-3.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 4
+}
+animations {
+  id: "explode"
+  images {
+    image: "/assets/img/fireball/explode-0.png"
+  }
+  images {
+    image: "/assets/img/fireball/explode-1.png"
+  }
+  images {
+    image: "/assets/img/fireball/explode-2.png"
+  }
+  images {
+    image: "/assets/img/fireball/explode-3.png"
+  }
+  fps: 8
+}
+extrude_borders: 2

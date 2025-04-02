@@ -1,0 +1,71 @@
+local LIVE_TIME = 5.0
+local SPEED = 6.0
+
+go.property("is_reflected", false)
+
+local function on_destroy_animation_end() 
+    go.delete()
+end
+
+local function on_destroy(self)
+    self.is_active = false;
+    sprite.play_flipbook("#sprite", "explode", on_destroy_animation_end)
+end
+
+function init(self)
+    self.direction = vmath.vector3(-1, 0, 0)
+    self.live_time = LIVE_TIME
+    self.is_active = true;
+end
+
+function final(self)
+end
+
+function update(self, dt)
+    if (not self.is_active) then
+        return
+    end
+
+    self.live_time = self.live_time - dt
+    if self.live_time <= 0.0 then
+        on_destroy(self)
+    end
+end
+
+function fixed_update(self, dt)
+    if (not self.is_active) then
+        return
+    end
+
+    local norma = vmath.normalize(self.direction)
+    local pos = go.get_position()
+
+    pos.x = pos.x + norma.x * SPEED
+    pos.y = pos.y + norma.y * SPEED
+
+    go.set_position(pos)
+    local angle = math.atan2(self.direction.x, -self.direction.y)
+    go.set_rotation(vmath.quat_rotation_z(angle))
+end
+
+function on_message(self, message_id, message, sender)
+    if (not self.is_active) then
+        return
+    end
+
+    if message_id == hash("set_direction") then
+        self.direction = message.direction
+        self.is_reflected = message.is_reflected
+        self.time_to_destroy = LIVE_TIME
+    elseif message_id == hash("destroy") then
+        on_destroy(self)
+    elseif message_id == hash("is_reflected") then
+        msg.post(message.other_id, "is_reflected", { is_reflected = self.is_reflected, other_id = msg.url() })
+    end
+end
+
+function on_reload(self)
+    -- Add reload-handling code here
+    -- Learn more: https://defold.com/manuals/hot-reload/
+    -- Remove this function if not needed
+end

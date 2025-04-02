@@ -1,0 +1,25 @@
+animations {
+  id: "stay"
+  images {
+    image: "/assets/img/hero/move-0.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+}
+animations {
+  id: "move"
+  images {
+    image: "/assets/img/hero/move-0.png"
+  }
+  images {
+    image: "/assets/img/hero/move-1.png"
+  }
+  images {
+    image: "/assets/img/hero/move-2.png"
+  }
+  images {
+    image: "/assets/img/hero/move-3.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 8
+}
+extrude_borders: 2

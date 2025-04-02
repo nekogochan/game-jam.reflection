@@ -1,108 +1,38 @@
 name: "main"
+collection_instances {
+  id: "hero"
+  collection: "/prefabs/hero.collection"
+  position {
+    x: 320.0
+    y: 320.0
+  }
+}
+collection_instances {
+  id: "kitaec"
+  collection: "/prefabs/kitaec.collection"
+  position {
+    x: 711.0
+    y: 426.0
+  }
+}
+collection_instances {
+  id: "kitaec1"
+  collection: "/prefabs/kitaec.collection"
+  position {
+    x: 1093.0
+    y: 536.0
+  }
+}
 scale_along_z: 0
 embedded_instances {
   id: "map"
   data: "components {\n"
   "  id: \"map\"\n"
-  "  component: \"/main/map.tilemap\"\n"
+  "  component: \"/assets/tilemaps/map.tilemap\"\n"
   "}\n"
   ""
   scale3 {
     x: 4.0
     y: 4.0
-  }
-}
-embedded_instances {
-  id: "hero"
-  children: "shield"
-  data: "components {\n"
-  "  id: \"hero\"\n"
-  "  component: \"/main/hero.script\"\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"sprite\"\n"
-  "  type: \"sprite\"\n"
-  "  data: \"default_animation: \\\"stay\\\"\\n"
-  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
-  "textures {\\n"
-  "  sampler: \\\"texture_sampler\\\"\\n"
-  "  texture: \\\"/main/hero.atlas\\\"\\n"
-  "}\\n"
-  "\"\n"
-  "  rotation {\n"
-  "    z: 1.0\n"
-  "    w: 6.123234E-17\n"
-  "  }\n"
-  "  scale {\n"
-  "    x: 2.0\n"
-  "    y: 2.0\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"move\"\n"
-  "  type: \"sound\"\n"
-  "  data: \"sound: \\\"/assets/sound/top-top.ogg\\\"\\n"
-  "looping: 1\\n"
-  "gain: 10.0\\n"
-  "\"\n"
-  "}\n"
-  ""
-  position {
-    x: 320.0
-    y: 320.0
-    z: 1.0
-  }
-}
-embedded_instances {
-  id: "camera"
-  data: "embedded_components {\n"
-  "  id: \"it\"\n"
-  "  type: \"camera\"\n"
-  "  data: \"aspect_ratio: 2.0\\n"
-  "fov: 0.7854\\n"
-  "near_z: -10.0\\n"
-  "far_z: 10.0\\n"
-  "orthographic_projection: 1\\n"
-  "orthographic_zoom: 1.5\\n"
-  "\"\n"
-  "}\n"
-  ""
-}
-embedded_instances {
-  id: "shield"
-  data: "components {\n"
-  "  id: \"shield\"\n"
-  "  component: \"/main/shield.script\"\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"sprite\"\n"
-  "  type: \"sprite\"\n"
-  "  data: \"default_animation: \\\"ready\\\"\\n"
-  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
-  "textures {\\n"
-  "  sampler: \\\"texture_sampler\\\"\\n"
-  "  texture: \\\"/main/shield.atlas\\\"\\n"
-  "}\\n"
-  "\"\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"reflect\"\n"
-  "  type: \"sound\"\n"
-  "  data: \"sound: \\\"/assets/sound/otrazhenie-shita.ogg\\\"\\n"
-  "\"\n"
-  "}\n"
-  ""
-  position {
-    x: 17.0
-    y: 48.0
-    z: 0.1
-  }
-  rotation {
-    x: 1.0
-    w: 6.123234E-17
-  }
-  scale3 {
-    x: 2.0
-    y: 2.0
   }
 }

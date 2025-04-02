@@ -1,18 +1,18 @@
 key_trigger {
   input: KEY_W
-  action: "move-up"
+  action: "up"
 }
 key_trigger {
   input: KEY_S
-  action: "move-down"
+  action: "down"
 }
 key_trigger {
   input: KEY_A
-  action: "move-left"
+  action: "left"
 }
 key_trigger {
   input: KEY_D
-  action: "move-right"
+  action: "right"
 }
 mouse_trigger {
   input: MOUSE_BUTTON_LEFT

@@ -1,0 +1,56 @@
+animations {
+  id: "ready"
+  images {
+    image: "/assets/img/shield/charge-4.png"
+  }
+  playback: PLAYBACK_NONE
+  fps: 1
+}
+animations {
+  id: "charge"
+  images {
+    image: "/assets/img/shield/charge-0.png"
+  }
+  images {
+    image: "/assets/img/shield/charge-1.png"
+  }
+  images {
+    image: "/assets/img/shield/charge-2.png"
+  }
+  images {
+    image: "/assets/img/shield/charge-3.png"
+  }
+  images {
+    image: "/assets/img/shield/charge-4.png"
+  }
+  fps: 8
+}
+animations {
+  id: "reflect"
+  images {
+    image: "/assets/img/shield/reflect-0.png"
+  }
+  images {
+    image: "/assets/img/shield/reflect-1.png"
+  }
+  images {
+    image: "/assets/img/shield/reflect-2.png"
+  }
+  images {
+    image: "/assets/img/shield/reflect-3.png"
+  }
+  images {
+    image: "/assets/img/shield/reflect-4.png"
+  }
+  images {
+    image: "/assets/img/shield/reflect-5.png"
+  }
+  images {
+    image: "/assets/img/shield/reflect-6.png"
+  }
+  images {
+    image: "/assets/img/shield/reflect-7.png"
+  }
+  fps: 20
+}
+extrude_borders: 2

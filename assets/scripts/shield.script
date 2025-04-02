@@ -1,0 +1,41 @@
+-- todo-matvey: надо сделать так, чтобы при попадании пули в щит урон не проходил
+-- а то получается какая-то фигня
+
+local function on_charge_end(self)
+	sprite.play_flipbook("#sprite", "ready");
+	self.isReady = true;
+end
+
+local function on_charge_start()
+	sprite.play_flipbook("#sprite", "charge", on_charge_end);
+end
+
+local function on_reflect(self)
+	self.isReady = false;
+	sprite.play_flipbook("#sprite", "reflect", on_charge_start);
+end
+
+-------
+
+function init(self)
+	msg.post(".", "acquire_input_focus");
+	self.isReady = true;
+end
+
+function on_input(self, action_id, action)
+	if (action_id == hash('mouse-click') and self.isReady) then
+		on_reflect(self);
+	end
+end
+
+function on_message(self, message_id, message)
+    if message_id == hash("trigger_response") then
+		if self.isReady then
+			msg.post(message.other_id, "set_direction", { direction = self.look_dirv, is_reflected = true })
+		else
+			msg.post(message.other_id, "kill")
+		end
+	elseif message_id == hash("set_direction") then
+		self.look_dirv = message.direction
+	end
+end
