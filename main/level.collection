@@ -54,6 +54,12 @@ embedded_instances {
   "  data: \"prototype: \\\"/prefabs/teleport-kitaec.collection\\\"\\n"
   "\"\n"
   "}\n"
+  "embedded_components {\n"
+  "  id: \"death\"\n"
+  "  type: \"collectionfactory\"\n"
+  "  data: \"prototype: \\\"/prefabs/kitaec-death.collection\\\"\\n"
+  "\"\n"
+  "}\n"
   ""
   position {
     x: -30.0
