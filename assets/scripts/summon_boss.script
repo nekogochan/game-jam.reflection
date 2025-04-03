@@ -1,5 +1,14 @@
+function init(self)
+	self.spawned = false
+end
+
 function on_message(self, message_id, message)
+	if self.spawned then
+		return
+	end
+
 	if message_id == hash('trigger_response') then
+		self.spawned = true
 		print("spawn boss")
 		local pos = go.get_position("/spawnpoint")
 		print(pos)
