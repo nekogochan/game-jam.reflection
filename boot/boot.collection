@@ -18,5 +18,11 @@ embedded_instances {
   "  data: \"collection: \\\"/main/level.collection\\\"\\n"
   "\"\n"
   "}\n"
+  "embedded_components {\n"
+  "  id: \"credits\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/menu/credits.collection\\\"\\n"
+  "\"\n"
+  "}\n"
   ""
 }

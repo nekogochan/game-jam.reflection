@@ -3,8 +3,8 @@ collection_instances {
   id: "hero"
   collection: "/prefabs/hero.collection"
   position {
-    x: 320.0
-    y: 318.0
+    x: 313.0
+    y: 320.0
   }
 }
 scale_along_z: 0
@@ -685,5 +685,56 @@ embedded_instances {
   position {
     x: 1209.0
     y: 2226.0
+  }
+}
+embedded_instances {
+  id: "boss-summon-trigger"
+  children: "spawnpoint"
+  data: "components {\n"
+  "  id: \"summon_boss\"\n"
+  "  component: \"/assets/scripts/summon_boss.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"trigger\"\n"
+  "  type: \"collisionobject\"\n"
+  "  data: \"type: COLLISION_OBJECT_TYPE_TRIGGER\\n"
+  "mass: 0.0\\n"
+  "friction: 0.1\\n"
+  "restitution: 0.5\\n"
+  "group: \\\"summon\\\"\\n"
+  "mask: \\\"hero\\\"\\n"
+  "embedded_collision_shape {\\n"
+  "  shapes {\\n"
+  "    shape_type: TYPE_BOX\\n"
+  "    position {\\n"
+  "      x: 1661.0\\n"
+  "      y: 3001.0\\n"
+  "    }\\n"
+  "    rotation {\\n"
+  "    }\\n"
+  "    index: 0\\n"
+  "    count: 3\\n"
+  "  }\\n"
+  "  data: 471.36398\\n"
+  "  data: 268.16867\\n"
+  "  data: 13.2\\n"
+  "}\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"spawn\"\n"
+  "  type: \"collectionfactory\"\n"
+  "  data: \"prototype: \\\"/prefabs/boss.collection\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "spawnpoint"
+  data: ""
+  position {
+    x: 1658.0
+    y: 3000.0
+    z: 1.0
   }
 }
