@@ -1,0 +1,83 @@
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+fonts {
+  name: "font"
+  font: "/assets/font/font.font"
+}
+textures {
+  name: "menu"
+  texture: "/assets/atlas/menu.atlas"
+}
+textures {
+  name: "hero-menu-animation"
+  texture: "/assets/atlas/hero-menu-animation.atlas"
+}
+nodes {
+  position {
+    x: 542.0
+    y: 362.0
+  }
+  scale {
+    x: 1.68
+    y: 2.0
+    z: 1.68
+  }
+  color {
+    x: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  texture: "menu/menu_bg"
+  id: "Background"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 732.0
+    y: 372.0
+  }
+  scale {
+    x: 3.0
+    y: 3.0
+  }
+  type: TYPE_BOX
+  texture: "menu/menu_tile"
+  id: "Name"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "WASD to move\n"
+  "Left  mouse\n"
+  "to reflect\n"
+  "presss anykey"
+  font: "font"
+  id: "name"
+  parent: "Name"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 212.0
+    y: 369.0
+  }
+  scale {
+    x: 10.0
+    y: 10.0
+  }
+  type: TYPE_BOX
+  texture: "hero-menu-animation/dance"
+  id: "box"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT
