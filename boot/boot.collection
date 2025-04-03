@@ -1,4 +1,4 @@
-name: "main"
+name: "boot"
 scale_along_z: 0
 embedded_instances {
   id: "loader"
@@ -9,7 +9,7 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"menu\"\n"
   "  type: \"collectionproxy\"\n"
-  "  data: \"collection: \\\"/main/menu.collection\\\"\\n"
+  "  data: \"collection: \\\"/menu/menu.collection\\\"\\n"
   "\"\n"
   "}\n"
   "embedded_components {\n"

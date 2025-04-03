@@ -58,7 +58,7 @@ nodes {
   text: "WASD to move\n"
   "Left  mouse\n"
   "to reflect\n"
-  "presss anykey"
+  "press anykey"
   font: "font"
   id: "name"
   parent: "Name"
