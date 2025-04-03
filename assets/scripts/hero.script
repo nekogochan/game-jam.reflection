@@ -1,9 +1,8 @@
 local DISPLAY_WIDTH = sys.get_config_int("display.width")
 local DISPLAY_HEIGHT = sys.get_config_int("display.height")
 local SPEED_MP = 1.60
-local NO_DMG_TIME_S = 2.0
 
-go.property("hp", 300)
+go.property("hp", 100)
 
 local function update_gui_hp(value)
     msg.post('/map#level', 'update_hp', { value = value })
@@ -21,6 +20,13 @@ local function set_anim(self, anim)
     end
 end
 
+local function on_die(self) 
+    if (not self.dead) then
+        self.dead = true
+        sound.play('#lose-' .. math.random(1, 2))
+    end
+end
+
 function init(self)
     self.linspeed = 4.0
 
@@ -29,7 +35,7 @@ function init(self)
     self.down = 0
     self.left = 0
     self.right = 0
-    self.no_dmg_time = 0
+    self.dead = false
 
     self.mouse_screen_pos = vmath.vector3()
     self.mouse_world_pos = vmath.vector3()
@@ -42,14 +48,15 @@ function init(self)
     msg.post(".", "acquire_input_focus")
 
     update_gui_hp(self.hp)
+
+    math.randomseed(socket.gettime())
+    sound.play("#go-fight-" .. math.random(1, 2))
 end
 
 function update(self, dt)
     if self.hp <= 0 then
         return
     end
-
-    self.no_dmg_time = self.no_dmg_time - dt
 
     self.mouse_world_pos = screen_to_world(self.mouse_screen_pos.x, self.mouse_screen_pos.y, self.mouse_screen_pos.z,
         "camobj#camera")
@@ -101,12 +108,20 @@ function fixed_update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
+    if (self.dead) then
+        return
+    end
+
     if message_id == hash("trigger_response") then
-        if (message.own_group == hash('player_hp') and self.no_dmg_time < 0) then
+        if (message.own_group == hash('player_hp')) then
             msg.post(message.other_id, "destroy")
             self.hp = self.hp - 1
             update_gui_hp(self.hp)
-            self.no_dmg_time = NO_DMG_TIME_S
+            if (self.hp <= 0) then
+                on_die(self)
+            else
+                sound.play('#got-dmg-' .. math.random(1, 2))
+            end
         end
     end
 end

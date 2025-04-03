@@ -1,0 +1,7 @@
+local function die()
+    go.delete(".", true);
+end
+
+function init(self)
+    sound.play("#sound", nil, die)
+end

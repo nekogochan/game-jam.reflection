@@ -10,7 +10,7 @@ end
 local function on_destroy(self)
     self.is_active = false;
     sprite.play_flipbook("#sprite", "explode", on_destroy_animation_end)
-    sound.stop("#move")
+    msg.post('/sounds', 'fireball_sound', { change = -1 })
     sound.play("#explode")
 end
 
@@ -19,7 +19,7 @@ function init(self)
     self.speed_mul = 1.0
     self.live_time = LIVE_TIME
     self.is_active = true;
-    sound.play("#move")
+    msg.post('/sounds', 'fireball_sound', { change = 1 })
 end
 
 function final(self)

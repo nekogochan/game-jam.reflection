@@ -82,12 +82,6 @@ function init(self)
     self.random_place = go.get_position()
 end
 
-function final(self)
-    -- Add finalization code here
-    -- Learn more: https://defold.com/manuals/script/
-    -- Remove this function if not needed
-end
-
 function update(self, dt)
     if self.behavior == S_RUN_TO_PLAYER then
         local player_pos = go.get_position(msg.url("/hero/heroobj"))
@@ -120,11 +114,13 @@ function update(self, dt)
     end
 end
 
+
 function on_message(self, message_id, message, sender)
     if message_id == hash("trigger_response") then
         msg.post(message.other_id, "is_reflected", { other_id = msg.url() })
     elseif message_id == hash("is_reflected") and message.is_reflected then
         msg.post(message.other_id, "destroy")
+        collectionfactory.create('/kitaec-factory#death', go.get_position())
         go.delete(".", true)
     end
 end

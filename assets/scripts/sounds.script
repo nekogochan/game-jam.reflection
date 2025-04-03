@@ -1,5 +1,20 @@
+local FIREBALL_MP = 0.1
+
 function init(self)
+    self.fireball_gain = -1;
+    sound.play("#fireball-move")
+    sound.set_gain('#fireball-move', self.fireball_gain * FIREBALL_MP)
+    sound.play("#music-kitaec")
 end
 
 function on_message(self, message_id, message)
+    if (message_id == hash('fireball_sound')) then
+        local change = message.change
+        self.fireball_gain = self.fireball_gain + change
+        print(self.fireball_gain)
+        sound.set_gain('#fireball-move', self.fireball_gain * FIREBALL_MP)
+    elseif (message_id == hash('start_boss_music')) then
+        sound.stop('#music-kitaec')
+        sound.play('#music-boss')
+    end
 end

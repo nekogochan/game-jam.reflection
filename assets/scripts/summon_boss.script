@@ -14,5 +14,7 @@ function on_message(self, message_id, message)
 		print(pos)
 		local created_ids = collectionfactory.create("#spawn", pos, vmath.euler_to_quat(0, 0, 0), {}, vmath.vector3(4, 4, 1))
 		print(created_ids)
+
+        msg.post('/sounds', 'start_boss_music')
 	end
 end

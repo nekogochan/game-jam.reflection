@@ -1,0 +1,17 @@
+name: "kitaec-death"
+scale_along_z: 0
+embedded_instances {
+  id: "death"
+  data: "components {\n"
+  "  id: \"kitaec-death\"\n"
+  "  component: \"/assets/scripts/kitaec-death.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"sound\"\n"
+  "  type: \"sound\"\n"
+  "  data: \"sound: \\\"/assets/sound/kitaec-umer.ogg\\\"\\n"
+  "gain: 0.4\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
