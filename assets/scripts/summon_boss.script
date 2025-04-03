@@ -1,0 +1,9 @@
+function on_message(self, message_id, message)
+	if message_id == hash('trigger_response') then
+		print("spawn boss")
+		local pos = go.get_position("/spawnpoint")
+		print(pos)
+		local created_ids = collectionfactory.create("#spawn", pos, vmath.euler_to_quat(0, 0, 0), {}, vmath.vector3(4, 4, 1))
+		print(created_ids)
+	end
+end
