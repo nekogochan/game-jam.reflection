@@ -1,0 +1,25 @@
+animations {
+  id: "idle"
+  images {
+    image: "/assets/img/yasher/move-0.png"
+  }
+  playback: PLAYBACK_NONE
+  fps: 1
+}
+animations {
+  id: "walk"
+  images {
+    image: "/assets/img/yasher/move-0.png"
+  }
+  images {
+    image: "/assets/img/yasher/move-1.png"
+  }
+  images {
+    image: "/assets/img/yasher/move-2.png"
+  }
+  images {
+    image: "/assets/img/yasher/move-3.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+}
+extrude_borders: 2

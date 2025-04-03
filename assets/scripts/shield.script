@@ -1,39 +1,42 @@
--- todo-matvey: надо сделать так, чтобы при попадании пули в щит урон не проходил
--- а то получается какая-то фигня
+local S_READY = 0
+local S_CHARGE = 1
+local S_REFLECT = 2
 
-local function on_charge_end(self)
-	sprite.play_flipbook("#sprite", "ready");
-	self.isReady = true;
+local function on_ready(self)
+	sprite.play_flipbook("#sprite", "ready")
+    self.state = S_READY
 end
 
-local function on_charge_start()
-	sprite.play_flipbook("#sprite", "charge", on_charge_end);
+local function on_charge(self)
+	sprite.play_flipbook("#sprite", "charge", on_ready)
+    self.state = S_CHARGE
 end
 
 local function on_reflect(self)
-	self.isReady = false;
-	sprite.play_flipbook("#sprite", "reflect", on_charge_start);
+	sprite.play_flipbook("#sprite", "reflect", on_charge)
+    self.state = S_REFLECT
 end
 
 -------
 
 function init(self)
-	msg.post(".", "acquire_input_focus");
-	self.isReady = true;
+	msg.post(".", "acquire_input_focus")
+    on_ready(self)
 end
 
 function on_input(self, action_id, action)
-	if (action_id == hash('mouse-click') and self.isReady) then
-		on_reflect(self);
+	if (action_id == hash('mouse-click') and self.state == S_READY) then
+		on_reflect(self)
+        sound.play("#reflect")
 	end
 end
 
 function on_message(self, message_id, message)
-    if message_id == hash("trigger_response") then
-		if self.isReady then
+  if message_id == hash("trigger_response") then
+		if self.state == S_REFLECT then
 			msg.post(message.other_id, "set_direction", { direction = self.look_dirv, is_reflected = true })
 		else
-			msg.post(message.other_id, "kill")
+			msg.post(message.other_id, "destroy")
 		end
 	elseif message_id == hash("set_direction") then
 		self.look_dirv = message.direction

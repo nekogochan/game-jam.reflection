@@ -1,0 +1,23 @@
+animations {
+  id: "summon"
+  images {
+    image: "/assets/img/teleport/summon-0.png"
+  }
+  images {
+    image: "/assets/img/teleport/summon-1.png"
+  }
+  images {
+    image: "/assets/img/teleport/summon-2.png"
+  }
+  images {
+    image: "/assets/img/teleport/summon-3.png"
+  }
+  images {
+    image: "/assets/img/teleport/summon-4.png"
+  }
+  images {
+    image: "/assets/img/teleport/summon-5.png"
+  }
+  fps: 8
+}
+extrude_borders: 2

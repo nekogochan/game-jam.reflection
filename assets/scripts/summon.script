@@ -1,0 +1,44 @@
+local PREFIX = 'enemy-summon-'
+local RELOAD_S = 0.2;
+
+go.property("prefix_number", 1)
+
+function init(self)
+    self.spawn = false;
+    self.reload = RELOAD_S;
+    self.next = 1;
+    self.prefix_number = math.floor(self.prefix_number)
+end
+
+local function get_pos(self)
+    local id = PREFIX ..  self.prefix_number .. '-' .. self.next
+    local found, value = pcall(go.get_position, id)
+    if (found) then
+        return value
+    else
+        return nil
+    end
+end
+
+function update(self, dt)
+    if (self.spawn) then
+        self.reload = self.reload - dt
+        if (self.reload <= 0) then
+            local pos = get_pos(self)
+            if (pos ~= nil) then
+                print('spawn next: ' .. pos)
+                local ids = collectionfactory.create('/kitaec-factory#teleport', pos)
+                self.next = self.next + 1
+                self.reload = RELOAD_S
+            else
+                go.delete()
+            end
+        end
+    end
+end
+
+function on_message(self, message_id, message)
+    if (message_id == hash('trigger_response')) then
+        self.spawn = true
+    end
+end

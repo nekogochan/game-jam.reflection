@@ -1,0 +1,28 @@
+name: "teleport"
+scale_along_z: 0
+embedded_instances {
+  id: "teleport-obj"
+  data: "components {\n"
+  "  id: \"teleport-kitaec\"\n"
+  "  component: \"/assets/scripts/teleport-kitaec.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"sprite\"\n"
+  "  type: \"sprite\"\n"
+  "  data: \"default_animation: \\\"summon\\\"\\n"
+  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
+  "textures {\\n"
+  "  sampler: \\\"texture_sampler\\\"\\n"
+  "  texture: \\\"/assets/atlas/teleport.atlas\\\"\\n"
+  "}\\n"
+  "\"\n"
+  "  scale {\n"
+  "    x: 2.0\n"
+  "    y: 2.0\n"
+  "  }\n"
+  "}\n"
+  ""
+  position {
+    z: 2.0
+  }
+}
