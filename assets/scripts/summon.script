@@ -28,9 +28,6 @@ function update(self, dt)
             if (pos ~= nil) then
                 print('spawn next: ' .. pos)
                 local ids = collectionfactory.create('/kitaec-factory#teleport', pos)
-                for k, v in pairs(ids) do
-                    print(k, v)
-                  end
                 self.next = self.next + 1
                 self.reload = RELOAD_S
             else
@@ -42,7 +39,6 @@ end
 
 function on_message(self, message_id, message)
     if (message_id == hash('trigger_response')) then
-        print(message.other_group .. ', ' .. message.other_id)
         self.spawn = true
     end
 end

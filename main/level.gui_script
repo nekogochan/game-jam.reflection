@@ -22,9 +22,7 @@ function update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-    print(message_id)
     if (message_id == hash('update_hp')) then
-        print(message.value)
         update_hp(message.value)
     end
 end

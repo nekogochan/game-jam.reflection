@@ -221,3 +221,15 @@ embedded_instances {
     y: -4.0
   }
 }
+embedded_instances {
+  id: "sounds"
+  data: "embedded_components {\n"
+  "  id: \"fire-fly\"\n"
+  "  type: \"sound\"\n"
+  "  data: \"sound: \\\"/assets/sound/fireball-move.ogg\\\"\\n"
+  "looping: 1\\n"
+  "gain: 0.0\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
