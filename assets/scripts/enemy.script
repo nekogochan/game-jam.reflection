@@ -1,27 +1,29 @@
 local S_LOOK = 0
 local S_SHOOT = 1
 local S_MANEUER = 2
-local S_DO_NOTHING = 3
 local S_RUN_TO_PLAYER = 4
 local TIME_TO_SWITCH_BEHAVIOR_S = 0.87
 
--- todo-matvey: сделать так, чтобы чувак бежал до игрока пока расстояние не будет такое
 local DISTANCE_TO_BE_ANGRY_AS_FUCK = 500
 
-local function switch_behavior(self)
-    if self.behavior == S_RUN_TO_PLAYER or self.behavior == S_MANEUER then
-        self.behavior = S_LOOK
-    elseif self.behavior == S_LOOK then
-        self.behavior = S_SHOOT
-    elseif self.behavior == S_SHOOT then
-        self.behavior = S_MANEUER
-        self.random_place = go.get_position() + vmath.vector3(math.random(-70, 70), math.random(-70, 70), 0)
+local function switch_behavior(self, is_far)
+    if not is_far then
+        if self.behavior == S_RUN_TO_PLAYER or self.behavior == S_MANEUER then
+            self.behavior = S_LOOK
+        elseif self.behavior == S_LOOK then
+            self.behavior = S_SHOOT
+        elseif self.behavior == S_SHOOT then
+            self.behavior = S_MANEUER
+            self.random_place = go.get_position() + vmath.vector3(math.random(-70, 70), math.random(-70, 70), 0)
+        end
+    else
+        self.behavior = S_RUN_TO_PLAYER
     end
 
     self.time_to_switch_behavior = 0.87
 end
 
-local function look_at(target_pos) -- should not be inside a cycle
+local function look_at(target_pos)
     local pos = go.get_position()
     local dir = target_pos - pos
     dir.z = pos.z
@@ -32,6 +34,14 @@ local function look_at(target_pos) -- should not be inside a cycle
     angle = math.deg(angle)
 
     go.set_rotation(vmath.euler_to_quat(0, 0, angle), "sprite")
+end
+
+local function calc_direction(self, target_pos)
+    local pos = go.get_position()
+    local dir = target_pos - pos
+    dir.z = pos.z
+
+    return dir
 end
 
 local function run_to_place(self, target_pos)
@@ -59,9 +69,9 @@ local function shoot(self)
 end
 
 function init(self)
-    self.behavior = S_DO_NOTHING
+    self.behavior = S_RUN_TO_PLAYER
 
-    self.time_to_switch_behavior = .0 -- in seconds
+    self.time_to_switch_behavior = 0.0 -- in seconds
     self.linspeed = 0.87
     self.random_place = go.get_position()
 end
@@ -73,41 +83,34 @@ function final(self)
 end
 
 function update(self, dt)
-    if (self.behavior == S_DO_NOTHING) then
-        local player_pos = go.get_position(msg.url("/hero/heroobj"))
-        local my_pos = go.get_position()
-        local distance = vmath.length(my_pos - player_pos)
-        if (distance < DISTANCE_TO_BE_ANGRY_AS_FUCK) then
-            self.behavior = S_RUN_TO_PLAYER
-        end
-    end
-
     if self.behavior == S_RUN_TO_PLAYER then
         local player_pos = go.get_position(msg.url("/hero/heroobj"))
         look_at(player_pos)
         local distance = run_to_place(self, player_pos)
 
         if distance <= 1.0 then
-            switch_behavior(self)
+            switch_behavior(self, false)
         end
     elseif self.behavior == S_MANEUER then
         local distance = run_to_place(self, self.random_place)
         look_at(self.random_place)
 
         if distance <= 1.0 then
-            switch_behavior(self)
+            switch_behavior(self, false)
         end
     elseif self.behavior == S_LOOK then
         local player_pos = go.get_position(msg.url("/hero/heroobj"))
         look_at(player_pos)
     elseif self.behavior == S_SHOOT then
         shoot(self)
-        switch_behavior(self)
+        local distance = vmath.length(calc_direction(self, go.get_position("/hero/heroobj")))
+        switch_behavior(self, distance >= DISTANCE_TO_BE_ANGRY_AS_FUCK)
     end
 
     self.time_to_switch_behavior = self.time_to_switch_behavior - dt
     if self.time_to_switch_behavior <= 0.0 then
-        switch_behavior(self)
+        local distance = vmath.length(calc_direction(self, go.get_position("/hero/heroobj")))
+        switch_behavior(self, distance >= DISTANCE_TO_BE_ANGRY_AS_FUCK)
     end
 end
 
