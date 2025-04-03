@@ -2,7 +2,8 @@ local S_LOOK = 0
 local S_SHOOT = 1
 local S_MANEUER = 2
 local S_RUN_TO_PLAYER = 4
-local TIME_TO_SWITCH_BEHAVIOR_S = 0.87
+local TIME_TO_SWITCH_BEHAVIOR_MS_MIN = 400
+local TIME_TO_SWITCH_BEHAVIOR_MS_MAX = 800
 
 local DISTANCE_TO_BE_ANGRY_AS_FUCK = 500
 
@@ -20,7 +21,10 @@ local function switch_behavior(self, is_far)
         self.behavior = S_RUN_TO_PLAYER
     end
 
-    self.time_to_switch_behavior = 0.87
+    self.time_to_switch_behavior = math.random(
+        TIME_TO_SWITCH_BEHAVIOR_MS_MIN,
+        TIME_TO_SWITCH_BEHAVIOR_MS_MAX
+    ) / 1000
 end
 
 local function look_at(target_pos)
@@ -30,7 +34,8 @@ local function look_at(target_pos)
 
     local look_dirv = vmath.normalize(dir)
     local angle = math.atan2(look_dirv.y, look_dirv.x) +
-    math.pi / 2.0                                                   -- смещаем круг углов на пи/2 потому что спрайт смотрит в 3пи/2
+        math.pi /
+        2.0       -- смещаем круг углов на пи/2 потому что спрайт смотрит в 3пи/2
     angle = math.deg(angle)
 
     go.set_rotation(vmath.euler_to_quat(0, 0, angle), "sprite")
@@ -66,6 +71,7 @@ local function shoot(self)
 
     local projectile_urls = collectionfactory.create("#shooter", pos)
     msg.post(projectile_urls["/fireball-obj"], "set_direction", { direction = dir })
+    sound.play("#shoot")
 end
 
 function init(self)

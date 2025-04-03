@@ -1,0 +1,26 @@
+local SUMMON_TIME = 0.5
+
+local function on_animation_end()
+    go.delete()
+end
+
+function init(self)
+    sprite.play_flipbook('#sprite', 'summon', on_animation_end)
+    self.time_to_summon = SUMMON_TIME;
+    self.summoned = false
+end
+
+function update(self, dt)
+    if (self.summoned) then
+        return
+    end
+
+    self.time_to_summon = self.time_to_summon - dt
+    if (self.time_to_summon <= 0) then
+        collectionfactory.create('/kitaec-factory#enemy', go.get_position())
+        self.summoned = true;
+    end
+end
+
+function on_message(self, message_id, message, sender)
+end

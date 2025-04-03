@@ -1,0 +1,27 @@
+script: "/main/level.gui_script"
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+nodes {
+  position {
+    x: 14.0
+    y: 669.0
+  }
+  scale {
+    x: 4.724058
+    y: 4.254331
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "HP: ..."
+  font: "default"
+  id: "hp"
+  pivot: PIVOT_W
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

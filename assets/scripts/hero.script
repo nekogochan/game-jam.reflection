@@ -1,247 +1,174 @@
 local DISPLAY_WIDTH = sys.get_config_int("display.width")
 local DISPLAY_HEIGHT = sys.get_config_int("display.height")
+local SPEED_MP = 1.60
+local NO_DMG_TIME_S = 2.0
 
-go.property("hp", 3)
+go.property("hp", 300)
+
+local function update_gui_hp(value)
+    msg.post('/map#level', 'update_hp', { value = value })
+end
 
 local function set_anim(self, anim)
-	if anim ~= self.current_anim then
-		self.current_anim = anim
-		sprite.play_flipbook("sprite#sprite", anim)
-	end
+    if anim ~= self.current_anim then
+        self.current_anim = anim
+        sprite.play_flipbook("sprite#sprite", anim)
+        if (anim == 'move') then
+            sound.play("#move");
+        else
+            sound.stop("#move");
+        end
+    end
 end
 
 function init(self)
-	self.linspeed = 4.0
+    self.linspeed = 4.0
 
-	-- move directions
-	self.up = 0
-	self.down = 0
-	self.left = 0
-	self.right = 0
+    -- move directions
+    self.up = 0
+    self.down = 0
+    self.left = 0
+    self.right = 0
+    self.no_dmg_time = 0
 
-	self.mouse_screen_pos = vmath.vector3()
-	self.mouse_world_pos = vmath.vector3()
-	-- vector of looking direction
-	self.look_dirv = vmath.vector3()
+    self.mouse_screen_pos = vmath.vector3()
+    self.mouse_world_pos = vmath.vector3()
+    -- vector of looking direction
+    self.look_dirv = vmath.vector3()
 
-	self.shield_distance = 15.0
-	self.current_anim = "stay"
+    self.shield_distance = 15.0
+    self.current_anim = "stay"
 
-	msg.post(".", "acquire_input_focus")
+    msg.post(".", "acquire_input_focus")
+
+    update_gui_hp(self.hp)
 end
-
 
 function update(self, dt)
-	if self.hp <= 0 then
-		return
-	end
-	
-	self.mouse_world_pos = screen_to_world(self.mouse_screen_pos.x, self.mouse_screen_pos.y, self.mouse_screen_pos.z, "camobj#camera")
+    if self.hp <= 0 then
+        return
+    end
 
-	local pos = go.get_position(".")
-	local mouse_pos = self.mouse_world_pos
-	mouse_pos.z = pos.z
+    self.no_dmg_time = self.no_dmg_time - dt
 
-	self.look_dirv = vmath.normalize(mouse_pos - pos)
-	msg.post("shield#shield", "set_direction", {direction = self.look_dirv})
-	local angle = math.atan2(self.look_dirv.y, self.look_dirv.x) + math.pi / 2.0 -- смещаем круг углов на пи/2 потому что спрайт смотрит в 3пи/2
-	angle = math.deg(angle)
+    self.mouse_world_pos = screen_to_world(self.mouse_screen_pos.x, self.mouse_screen_pos.y, self.mouse_screen_pos.z,
+        "camobj#camera")
 
-	-- поворачиваем спрайт
-	go.set_rotation(vmath.euler_to_quat(0, 0, angle), "sprite")
-	-- двигаем щит на self.shield_distance от центра игрока в заданном направлении
-	local shield_pos = self.look_dirv * self.shield_distance
-	go.set_position(shield_pos, "shield")
-	go.set_rotation(vmath.euler_to_quat(0, 0, angle), "shield")
+    local pos = go.get_position(".")
+    local mouse_pos = self.mouse_world_pos
+    mouse_pos.z = pos.z
+
+    self.look_dirv = vmath.normalize(mouse_pos - pos)
+    msg.post("shield#shield", "set_direction", { direction = self.look_dirv })
+    local angle = math.atan2(self.look_dirv.y, self.look_dirv.x) +
+    math.pi / 2.0                                                             -- смещаем круг углов на пи/2 потому что спрайт смотрит в 3пи/2
+    angle = math.deg(angle)
+
+    -- поворачиваем спрайт
+    go.set_rotation(vmath.euler_to_quat(0, 0, angle), "sprite")
+    -- двигаем щит на self.shield_distance от центра игрока в заданном направлении
+    local shield_pos = self.look_dirv * self.shield_distance
+    go.set_position(shield_pos, "shield")
+    go.set_rotation(vmath.euler_to_quat(0, 0, angle), "shield")
 end
-
 
 function fixed_update(self, dt)
-	if self.hp <= 0 then
-		return
-	end
-	-- update position by input
-	local activated_directions = self.up + self.down + self.left + self.right
-	if activated_directions > 0 then
-		set_anim(self, "move")
-		local speed_on_dir = self.linspeed / (activated_directions / 2 + 0.5)
+    if self.hp <= 0 then
+        return
+    end
+    -- update position by input
+    local activated_directions = self.up + self.down + self.left + self.right
+    if activated_directions > 0 then
+        set_anim(self, "move")
+        local speed_on_dir = self.linspeed / (activated_directions / 2 + 0.5)
 
-		local move = vmath.vector3(
-			speed_on_dir * (self.right - self.left) / dt,
-			speed_on_dir * (self.up - self.down) / dt,
-			0.0
-		)
+        local move = vmath.vector3(
+            speed_on_dir * (self.right - self.left) / dt,
+            speed_on_dir * (self.up - self.down) / dt,
+            0.0
+        )
 
-		-- походу 600 - максимальная разрешенная движком скорость, что не очень быстро
-		-- чтобы еще сильнее ускорить движение стоит зайти в game.project -> physics -> scale
-		-- scale обратно пропорционален скорости физики в игре
-		-- (для тупых - меньше scale = больше скорость)
-		-- также можно уменьшить самого чела и соответственно подкрутить зум камеры
-		go.set("#physics", "linear_velocity", move * 1.8)
-	else
-		set_anim(self, "stay")
-		go.set("#physics", "linear_velocity", vmath.vector3())
-	end
+        -- походу 600 - максимальная разрешенная движком скорость, что не очень быстро
+        -- чтобы еще сильнее ускорить движение стоит зайти в game.project -> physics -> scale
+        -- scale обратно пропорционален скорости физики в игре
+        -- (для тупых - меньше scale = больше скорость)
+        -- также можно уменьшить самого чела и соответственно подкрутить зум камеры
+        go.set("#physics", "linear_velocity", move * SPEED_MP)
+    else
+        set_anim(self, "stay")
+        go.set("#physics", "linear_velocity", vmath.vector3())
+    end
 end
 
-
 function on_message(self, message_id, message, sender)
-	if message_id == hash("trigger_response") then
-		msg.post(message.other_id, "destroy")
-		self.hp = self.hp - 1
-	end
+    if message_id == hash("trigger_response") then
+        if (message.own_group == hash('player_hp') and self.no_dmg_time < 0) then
+            msg.post(message.other_id, "destroy")
+            self.hp = self.hp - 1
+            update_gui_hp(self.hp)
+            self.no_dmg_time = NO_DMG_TIME_S
+        end
+    end
 end
 
 function on_input(self, action_id, action)
+    if action_id == hash("up") then
+        if action.pressed then
+            self.up = 1
+        elseif action.released then
+            self.up = 0
+        end
+    end
 
-	if action_id == hash("up") then
-		if action.pressed then
-			self.up = 1
-		elseif action.released then
-			self.up = 0
-		end
-	end
+    if action_id == hash("down") then
+        if action.pressed then
+            self.down = 1
+        elseif action.released then
+            self.down = 0
+        end
+    end
 
-	if action_id == hash("down") then
-		if action.pressed then
-			self.down = 1
-		elseif action.released then
-			self.down = 0
-		end
-	end
+    if action_id == hash("left") then
+        if action.pressed then
+            self.left = 1
+        elseif action.released then
+            self.left = 0
+        end
+    end
 
-	if action_id == hash("left") then
-		if action.pressed then
-			self.left = 1
-		elseif action.released then
-			self.left = 0
-		end
-	end
+    if action_id == hash("right") then
+        if action.pressed then
+            self.right = 1
+        elseif action.released then
+            self.right = 0
+        end
+    end
 
-	if action_id == hash("right") then
-		if action.pressed then
-			self.right = 1
-		elseif action.released then
-			self.right = 0
-		end
-	end
-
-	if action_id == nil then
-		self.mouse_screen_pos = vmath.vector3(action.x, action.y, 0)
-	end
+    if action_id == nil then
+        self.mouse_screen_pos = vmath.vector3(action.x, action.y, 0)
+    end
 end
-
 
 function on_reload(self)
-	-- Add reload-handling code here
-	-- Learn more: https://defold.com/manuals/hot-reload/
-	-- Remove this function if not needed
+    -- Add reload-handling code here
+    -- Learn more: https://defold.com/manuals/hot-reload/
+    -- Remove this function if not needed
 end
-
 
 -- https://defold.com/manuals/camera/#converting-mouse-to-world-coordinates
 function screen_to_world(x, y, z, camera_id)
-	local projection = camera.get_projection(camera_id) -- матрица проекции камеры
-	local view = camera.get_view(camera_id) -- матрица передвижения камеры относительно (0, 0, 0)
-	local w, h = window.get_size()
-	w = w / (w / DISPLAY_WIDTH)
-	h = h / (h / DISPLAY_HEIGHT)
+    local projection = camera.get_projection(camera_id) -- матрица проекции камеры
+    local view = camera.get_view(camera_id)          -- матрица передвижения камеры относительно (0, 0, 0)
+    local w, h = window.get_size()
+    w = w / (w / DISPLAY_WIDTH)
+    h = h / (h / DISPLAY_HEIGHT)
 
-	local inv = vmath.inv(projection * view) -- инверсия операции мировые координаты -> экранные
-	x = (2 * x / w) - 1
-	y = (2 * y / h) - 1
-	z = (2 * z) - 1
-	local x1 = x * inv.m00 + y * inv.m01 + z * inv.m02 + inv.m03
-	local y1 = x * inv.m10 + y * inv.m11 + z * inv.m12 + inv.m13
-	local z1 = x * inv.m20 + y * inv.m21 + z * inv.m22 + inv.m23
-	return vmath.vector3(x1, y1, z1)
+    local inv = vmath.inv(projection * view) -- инверсия операции мировые координаты -> экранные
+    x = (2 * x / w) - 1
+    y = (2 * y / h) - 1
+    z = (2 * z) - 1
+    local x1 = x * inv.m00 + y * inv.m01 + z * inv.m02 + inv.m03
+    local y1 = x * inv.m10 + y * inv.m11 + z * inv.m12 + inv.m13
+    local z1 = x * inv.m20 + y * inv.m21 + z * inv.m22 + inv.m23
+    return vmath.vector3(x1, y1, z1)
 end
-
-
--- local DISPLAY_CENTER_X = sys.get_config_int("display.width") / 2
--- local DISPLAY_CENTER_Y = sys.get_config_int("display.height") / 2
-
--- local function set_cam_to_self()
--- 	go.set_position(go.get_position(), 'camera');
--- end
-
--- -------
-
--- function init(self)
--- 	msg.post(".", "acquire_input_focus");
--- 	self.isMoving = false;
--- 	self.input = vmath.vector3(0, 1, 0);
--- 	self.speed = 300;
--- 	self.movingActiveKeys = 0;
--- 	self.screen_size = vmath.vector3();
--- 	set_cam_to_self();
--- end
-
--- function final(self)
--- 	msg.post(".", "release_input_focus")
--- end
-
--- function update(self, dt)
--- 	if (self.isMoving) then
--- 		local pos = go.get_position()
--- 		pos = pos + self.dir * self.speed * dt
--- 		go.set_position(pos)
--- 	end
-
--- 	self.input.x = 0
--- 	self.input.y = 0
--- 	self.isMoving = false
--- end
-
--- function on_input(self, action_id, action)
--- 	local isMoveAction = false
-	
--- 	if action_id == hash("move-up") then
--- 		self.input.y = 1
--- 		isMoveAction = true
--- 	elseif action_id == hash("move-down") then
--- 		self.input.y = -1
--- 		isMoveAction = true
--- 	elseif action_id == hash("move-left") then
--- 		self.input.x = -1
--- 		isMoveAction = true
--- 	elseif action_id == hash("move-right") then
--- 		self.input.x = 1
--- 		isMoveAction = true
--- 	end
-
--- 	if action.x and action.y then
--- 		local pos = go.get_position();
--- 		local angle = math.atan2(DISPLAY_CENTER_X - action.x, action.y - DISPLAY_CENTER_Y)
--- 		go.set_rotation(vmath.quat_rotation_z(angle), '#sprite')
--- 	end
-
--- 	if vmath.length(self.input) > 0 then
--- 		self.isMoving = true
--- 		self.dir = vmath.normalize(self.input)
--- 	end
-
--- 	if (action.pressed and isMoveAction) then
--- 		self.movingActiveKeys = self.movingActiveKeys + 1;
--- 	end
--- 	if (action.released and isMoveAction) then
--- 		self.movingActiveKeys = self.movingActiveKeys - 1;
--- 	end
-
--- 	if (self.movingActiveKeys > 0) then
--- 		set_cam_to_self();
--- 		if (self.movingActiveKeys == 1 and action.pressed and isMoveAction) then
--- 			sprite.play_flipbook("#sprite", hash("move"))
--- 			sound.play("#move");
--- 		end
--- 	else
--- 		sprite.play_flipbook("#sprite", hash("stay"));
--- 		sound.stop("#move");
--- 	end
--- end
-
--- function on_message(self, message_id, message)
--- 	if (message_id == 'screen_size') then
--- 		self.screen_size = message;
--- 	end
--- end
