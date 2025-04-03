@@ -1,0 +1,37 @@
+local function switch_to_scene(self, new_scene)
+	if new_scene == "level" then
+		self.current_level = new_scene
+		msg.post("/loader#menu", "unload")
+		msg.post("/loader#level", "load")
+	elseif new_scene == "menu" then
+		self.current_level = new_scene
+		msg.post("/loader#level", "unload")
+		msg.post("/loader#menu", "load")
+	end
+end
+
+function init(self)
+	self.current_level = "menu"
+	msg.post(".", "acquire_input_focus")
+	msg.post("/loader#menu", "load")
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("proxy_loaded") then
+		msg.post(sender, "enable")
+	end
+
+	if message_id == hash("change_scene") and message.scene then
+		switch_to_scene(message.scene)
+	end
+end
+
+function on_input(self, action_id, action)
+	if (self.current_level == "menu" or action_id == hash("escape")) and action.released then
+		if self.current_level == "level" then
+			switch_to_scene(self, "menu")
+		elseif self.current_level == "menu" then
+			switch_to_scene(self, "level")
+		end
+	end
+end
