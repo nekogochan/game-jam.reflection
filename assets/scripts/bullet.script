@@ -16,6 +16,7 @@ end
 
 function init(self)
     self.direction = vmath.vector3(-1, 0, 0)
+    self.speed_mul = 1.0
     self.live_time = LIVE_TIME
     self.is_active = true;
     sound.play("#move")
@@ -43,8 +44,8 @@ function fixed_update(self, dt)
     local norma = vmath.normalize(self.direction)
     local pos = go.get_position()
 
-    pos.x = pos.x + norma.x * SPEED
-    pos.y = pos.y + norma.y * SPEED
+    pos.x = pos.x + norma.x * SPEED * self.speed_mul
+    pos.y = pos.y + norma.y * SPEED * self.speed_mul
 
     go.set_position(pos)
     local angle = math.atan2(self.direction.x, -self.direction.y)
@@ -67,6 +68,8 @@ function on_message(self, message_id, message, sender)
         self.direction = message.direction
         self.is_reflected = message.is_reflected
         self.time_to_destroy = LIVE_TIME
+    elseif message_id == hash("set_speed_mul") then
+        self.speed_mul = message.speed_mul
     elseif message_id == hash("destroy") then
         on_destroy(self)
     elseif message_id == hash("is_reflected") then

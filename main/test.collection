@@ -1,0 +1,39 @@
+name: "test"
+collection_instances {
+  id: "hero"
+  collection: "/prefabs/hero.collection"
+  position {
+    x: 41.0
+    y: 30.0
+  }
+}
+collection_instances {
+  id: "boss"
+  collection: "/prefabs/boss.collection"
+  position {
+    x: 33.0
+    y: 328.0
+    z: 1.0
+  }
+  scale3 {
+    x: 4.0
+    y: 4.0
+  }
+}
+scale_along_z: 0
+embedded_instances {
+  id: "tilemap"
+  data: "components {\n"
+  "  id: \"map\"\n"
+  "  component: \"/assets/tilemaps/map.tilemap\"\n"
+  "}\n"
+  ""
+  position {
+    x: -1083.0
+    y: -2465.0
+  }
+  scale3 {
+    x: 4.0
+    y: 4.0
+  }
+}
